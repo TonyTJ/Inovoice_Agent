@@ -3,9 +3,9 @@ import numpy as np
 import fuzzychinese
 import re
 import json
-import os
 import contextlib
 import io
+from PIL import Image, ImageDraw, ImageFont
 
 def split_ocr_row(text):
     # Updated pattern to capture mixed quantity+unit blocks
@@ -45,14 +45,58 @@ def split_ocr_row(text):
             if qty_unit_match:
                 result["quantity"] = qty_unit_match.group(1)
                 result["unit"] = qty_unit_match.group(2)
-                result["error"] = "fallback partial parse"
+                # result["error"] = "fallback partial parse"
             else:
                 result["error"] = "cannot parse quantity/unit segment"
         else:
-            result["raw"] = text
             result["error"] = "unmatched format"
 
     return result
+
+def draw_chinese_text_in_box(img, text, box_coords, font_path="resource/wqy-zenhei.ttc", text_color=(0, 0, 0), bg_color=None):
+    """
+    Draw Chinese text inside a specified box on an image.
+    
+    Args:
+        img_path (str): Path to the input image.
+        text (str): Chinese text to draw.
+        box_coords (tuple): (x1, y1, x2, y2) coordinates of the box.
+        font_path (str): Path to a Chinese font file (e.g., simhei.ttf).
+        text_color (tuple): RGB color for the text.
+        bg_color (tuple): Optional background color for the box.
+    """
+    # Open the image
+    draw = ImageDraw.Draw(img)
+    
+    # Extract box dimensions
+    x1, y1, x2, y2 = box_coords
+    box_width = x2 - x1
+    box_height = y2 - y1
+    
+    # Start with a large font size and reduce until text fits
+    font_size = 50  # Initial guess
+    font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
+    
+    # Adjust font size to fit the box
+    while True:
+        text_width, text_height = draw.textsize(text, font=font)
+        if text_width <= box_width and text_height <= box_height:
+            break
+        font_size -= 1
+        font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
+    
+    # Calculate centered position
+    text_x = x1 + (box_width - text_width) // 2
+    text_y = y1 + (box_height - text_height) // 2
+    
+    # Optional: Draw background (if needed)
+    if bg_color:
+        draw.rectangle(box_coords, fill=bg_color)
+    
+    # Draw the text
+    draw.text((text_x, text_y), text, fill=text_color, font=font)
+    
+    return img
 
 class SingleItem:
     def __init__(self):
@@ -63,13 +107,19 @@ class SingleItem:
         self.match_score = -1
         self.ocr_score = -1
         self.box = None
+        self.ocr_text = None
+        self.final_text = None
+        self.warning = None
+        self.error = None
+        self.ocr_warning = None
+        self.ocr_error = None
 
     def format_output(self):
         return {
             'product_id': self.product_id,
             'matched_name': self.matched_name,
             'origin_input': self.origin_input,
-            'quantity': int(self.quantity),
+            'quantity': self.quantity,
             'match_score': float(self.match_score),
         }
 
@@ -92,6 +142,18 @@ class FuzzyMatch:
             item.match_score = result['match_score']
             item.ocr_score = result['score']
             item.box = result['box']
+            item.ocr_text = result['text']
+            item.final_text = result['matched_name'] + ' ' + result['quantity'] + ' ' +  result['unit']
+            item.warning = result.get('warning', None)
+            item.error = result.get('error', None)
+            if item.match_score < 0.8:
+                item.warning = "match score < 0.8"
+            if item.ocr_score < 0.75:
+                item.ocr_warning = "ocr score < 0.75"
+            if item.match_score < 0.65:
+                item.error = "match score < 0.65"
+            if item.ocr_score < 0.5:
+                item.ocr_error = "ocr score < 0.6"
             self.items.append(item)
 
     def load_items(self):
@@ -154,8 +216,6 @@ class FuzzyMatch:
             self.fcm_name_stroke.fit(template_item_name)
 
     def load_ocr_result(self, path):
-        """
-        """
         with open(path, 'r', encoding='utf-8') as f:
             ocr_result = json.load(f)
         ocr_texts = ocr_result['rec_texts']
@@ -164,17 +224,12 @@ class FuzzyMatch:
         return [dict(text=text, score=score, box=box) for text, score, box in zip(ocr_texts, ocr_scores, ocr_boxes)]
 
     def fuzzy_match_ocr_single(self, ocr_results):
-        """
-        """
         for row in ocr_results:
             result = split_ocr_row(row['text'])
-            if result.get('error', False):
-                row
-
-            row['item'] = result['item']
-            row['quantity'] = result['quantity']
-            row['unit'] = result['unit']
-            ocr_item_name = result['item']
+            row.update(result)
+            if row.get('item', None) is None:
+                continue
+            ocr_item_name = row['item']
             with contextlib.redirect_stdout(io.StringIO()):
                 fuzzy_result_stroke = self.fcm_name_stroke.transform([ocr_item_name])[0]
                 similarity_scores_stroke = self.fcm_name_stroke.get_similarity_score()[0]
@@ -212,7 +267,40 @@ class FuzzyMatch:
             row['matched_name'] = sorted_items[0]
             row['match_score'] = sorted_scores[0] if sorted_scores[0] < 1.0 else 1.0
         return ocr_results
+    
+    def render_result(self, src_data, output_path):
+        img = src_data
+        state2color = {
+            'normal': (0, 255, 0),
+            'warning': (180, 180, 0),
+            'error': (255, 0, 0)
+        }
+        width, height = img.size
+        ocr_result_image = Image.new('RGB', (width, height), color='white')
+        match_result_image = Image.new('RGB', (width, height), color='white')
+        for item in self.items:
+            box = item.box
+            state_ocr = 'normal'
+            if item.ocr_warning is not None:
+                state_ocr = 'warning'
+            if item.ocr_error is not None:
+                state_ocr = 'error'
+            color_ocr = state2color[state_ocr]
+            ocr_result_image = draw_chinese_text_in_box(ocr_result_image, item.ocr_text, box, text_color=color_ocr)
 
+            state = 'normal'
+            if item.warning is not None:
+                state = 'warning'
+            if item.error is not None:
+                state = 'error'
+            color = state2color[state]
+            match_result_image = draw_chinese_text_in_box(match_result_image, item.final_text, box, text_color=color)
+
+        final_img = Image.new('RGB', (width * 3, height))    
+        final_img.paste(img, (0, 0))
+        final_img.paste(ocr_result_image, (width, 0))
+        final_img.paste(match_result_image, (width * 2, 0))
+        final_img.save(output_path)
  
 if __name__ == '__main__':
     Matcher = FuzzyMatch()
@@ -220,3 +308,7 @@ if __name__ == '__main__':
     Matcher.fuzzy_match(ocr_path)
     output_path = './workdir/c1a3f7e2-9893-4fe3-a509-46b31007696c_output.json'
     Matcher.format_output(output_path)
+    render_path = './workdir/c1a3f7e2-9893-4fe3-a509-46b31007696c_render.jpg'
+    src_path = './workdir/c1a3f7e2-9893-4fe3-a509-46b31007696c.jpg'
+    src_data = Image.open(src_path)
+    Matcher.render_result(src_data, render_path)
