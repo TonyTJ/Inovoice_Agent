@@ -79,7 +79,12 @@ def draw_chinese_text_in_box(img, text, box_coords, font_path="resource/wqy-zenh
     
     # Adjust font size to fit the box
     while True:
-        text_width, text_height = draw.textsize(text, font=font)
+        # pillow <= 9.5.0
+        # text_width, text_height = draw.textsize(text, font=font)
+        # pillow >= 10.0.0
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1] 
         if text_width <= box_width and text_height <= box_height:
             break
         font_size -= 1
@@ -303,12 +308,13 @@ class FuzzyMatch:
         final_img.save(output_path)
  
 if __name__ == '__main__':
+    name = '3'
     Matcher = FuzzyMatch()
-    ocr_path = './workdir/c1a3f7e2-9893-4fe3-a509-46b31007696c_res.json'
+    ocr_path = './workdir/{}_res.json'.format(name)
     Matcher.fuzzy_match(ocr_path)
-    output_path = './workdir/c1a3f7e2-9893-4fe3-a509-46b31007696c_output.json'
+    output_path = './workdir/{}_output.json'.format(name)
     Matcher.format_output(output_path)
-    render_path = './workdir/c1a3f7e2-9893-4fe3-a509-46b31007696c_render.jpg'
-    src_path = './workdir/c1a3f7e2-9893-4fe3-a509-46b31007696c.jpg'
+    render_path = './workdir/{}_render.jpg'.format(name)
+    src_path = './workdir/{}.jpg'.format(name)
     src_data = Image.open(src_path)
     Matcher.render_result(src_data, render_path)
