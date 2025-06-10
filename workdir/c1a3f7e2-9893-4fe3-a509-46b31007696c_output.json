@@ -1,0 +1,49 @@
+{
+    "customer_name": null,
+    "order_date": null,
+    "items": [
+        {
+            "product_id": null,
+            "matched_name": "臘肉",
+            "origin_input": "東坡肉",
+            "quantity": "12×1242",
+            "match_score": 0.6336998649777906
+        },
+        {
+            "product_id": "J021010",
+            "matched_name": "豬皮",
+            "origin_input": "猪皮",
+            "quantity": "8",
+            "match_score": 0.8614701265692493
+        },
+        {
+            "product_id": "J009030",
+            "matched_name": "豬肉絲",
+            "origin_input": "細肉絲",
+            "quantity": "5",
+            "match_score": 0.9199612179673959
+        },
+        {
+            "product_id": "J009180",
+            "matched_name": "腩排",
+            "origin_input": "腩排",
+            "quantity": "10",
+            "match_score": 1.0
+        },
+        {
+            "product_id": "Q007042",
+            "matched_name": "肴豬腳",
+            "origin_input": "肴猪腳",
+            "quantity": "10",
+            "match_score": 0.8753127971176268
+        },
+        {
+            "product_id": "E009080",
+            "matched_name": "蒜泥",
+            "origin_input": "蒜泥白肉",
+            "quantity": "2",
+            "match_score": 0.921209947559658
+        }
+    ],
+    "status": null
+}
