@@ -1,0 +1,2 @@
+from .fuzzy_match_handwriting import FuzzyMatchHandwriting
+from .fuzzy_match_print import FuzzyMatchPrint
