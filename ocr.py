@@ -3,8 +3,8 @@ import fitz
 from PIL import Image
 import numpy as np
 
-ocr = PaddleOCR(device="gpu") # 通过 device 参数使得在模型推理时使用 GPU
 ocr = PaddleOCR(
+    device="gpu",
     text_detection_model_name="PP-OCRv5_server_det",
     text_recognition_model_name="PP-OCRv5_server_rec",
     use_doc_orientation_classify=False,
@@ -26,7 +26,7 @@ def pdf_to_images(pdf_path, dpi=300):
 if __name__ == "__main__":
     path = './resource/sap_order_chinese_4.pdf'
     # path = './resource/oracle_order_chinese_1.pdf'
-    imgs = pdf_to_images(path, dpi=200)
+    imgs = pdf_to_images(path, dpi=300)
     for idx, img in enumerate(imgs):
         result = ocr.predict(img)
         # for idx, res in enumerate(result):
