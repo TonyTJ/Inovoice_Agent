@@ -5,6 +5,7 @@ import numpy as np
 
 ocr = PaddleOCR(
     device="gpu",
+    det_db_unclip_ratio=2.0,
     text_detection_model_name="PP-OCRv5_server_det",
     text_recognition_model_name="PP-OCRv5_server_rec",
     use_doc_orientation_classify=False,
