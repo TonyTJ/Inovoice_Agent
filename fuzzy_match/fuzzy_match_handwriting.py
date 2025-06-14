@@ -79,6 +79,7 @@ class SingleItem:
 class FuzzyMatchHandwriting(FuzzyMatchBase):
     def __init__(self):
         super().__init__()
+        self.build_fuzzy_match(self.template_items, self.name_to_id)
     
     def fuzzy_match(self, path):
         ocr_results = self.load_ocr_result(path)
