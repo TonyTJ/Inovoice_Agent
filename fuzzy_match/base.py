@@ -5,30 +5,15 @@ import json
 from PIL import Image, ImageDraw, ImageFont
 
 def draw_chinese_text_in_box(img, text, box_coords, font_path="resource/wqy-zenhei.ttc", text_color=(0, 0, 0), bg_color=None):
-    """
-    Draw Chinese text inside a specified box on an image.
-    
-    Args:
-        img_path (str): Path to the input image.
-        text (str): Chinese text to draw.
-        box_coords (tuple): (x1, y1, x2, y2) coordinates of the box.
-        font_path (str): Path to a Chinese font file (e.g., simhei.ttf).
-        text_color (tuple): RGB color for the text.
-        bg_color (tuple): Optional background color for the box.
-    """
-    # Open the image
     draw = ImageDraw.Draw(img)
-    
-    # Extract box dimensions
+
     x1, y1, x2, y2 = box_coords
     box_width = x2 - x1
     box_height = y2 - y1
     
-    # Start with a large font size and reduce until text fits
-    font_size = 50  # Initial guess
+    font_size = 50
     font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
     
-    # Adjust font size to fit the box
     while True:
         # pillow <= 9.5.0
         # text_width, text_height = draw.textsize(text, font=font)
@@ -41,15 +26,12 @@ def draw_chinese_text_in_box(img, text, box_coords, font_path="resource/wqy-zenh
         font_size -= 1
         font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
     
-    # Calculate centered position
     text_x = x1 + (box_width - text_width) // 2
     text_y = y1 + (box_height - text_height) // 2
     
-    # Optional: Draw background (if needed)
     if bg_color:
         draw.rectangle(box_coords, fill=bg_color)
     
-    # Draw the text
     draw.text((text_x, text_y), text, fill=text_color, font=font)
     
     return img
@@ -58,10 +40,10 @@ class FuzzyMatchBase:
     def __init__(self):
         self.customer_name = None
         self.order_date = None
-        self.status = None
+        self.order_status = None
+        self.order_price = None
         self.template_path = './resource/客戶訂單資料.xlsx'
         self.load_items()
-        self.build_fuzzy_match(self.template_items, self.name_to_id)
 
     def load_items(self):
         """订单资料存在重复品号以及品号下多个品名情况，先处理成独立的词
@@ -84,8 +66,6 @@ class FuzzyMatchBase:
                 print("Error Result ", results)
                 continue
             unit = row['單位']
-            if unit == 'KG':
-                unit = '斤'
             for result in results:
                 result = result.strip()
                 result_unit = (result, unit)
@@ -143,10 +123,11 @@ class FuzzyMatchBase:
 
     def format_output(self, output_path):
         output = {
-            "customer_name": None,
-            "order_date": None,
+            "customer_name": self.customer_name,
+            "order_date": self.order_date,
+            "status": self.order_status,
             "items": [],
-            "status": None
+            
         }
         for item in self.items:
             output['items'].append(item.format_output())

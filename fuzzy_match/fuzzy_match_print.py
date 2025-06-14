@@ -1,16 +1,11 @@
-from fuzzywuzzy import fuzz
-import contextlib
-import io
+import fuzzywuzzy
+import re
 import os
+import fuzzywuzzy.process
 import numpy as np
-
+from copy import deepcopy
+import pandas as pd
 from .base import FuzzyMatchBase
-
-def find_nearest(x, y, threshold=10):
-    diff = np.abs(y - x)
-    min_idx = np.argmin(diff)
-    min_diff = diff[min_idx]
-    return min_idx if min_diff <= threshold else None
 
 class SingleItem:
     def __init__(self):
@@ -21,7 +16,7 @@ class SingleItem:
         self.match_score = -1
         self.ocr_score = -1
         self.box = None
-        self.ocr_text = None
+        self.ocr_text = ''
         self.final_text = None
         self.warning = None
         self.error = None
@@ -30,6 +25,8 @@ class SingleItem:
         self.price = -1
         self.total_price = -1
         self.unit = None
+        self.product_name = None
+        self.row_text = None
 
     def format_output(self):
         return {
@@ -49,39 +46,70 @@ class FuzzyMatchPrint(FuzzyMatchBase):
         super().__init__()
         self.titles = list()
         self.title_left_position = list()
+        self.items = list()
+        
+    def load_items(self):
+        """订单资料存在重复品号以及品号下多个品名情况，先处理成独立的词
+        处理逻辑：品名按照正斜杠与反斜杠做分隔，品名+单位绑定为一个元组，映射到一个品号id
+        如果品名+单位有重复，只保留第一个
+        """
+        ITEMS = dict()
+        NAME_to_ID = dict()
+        df = pd.read_excel(self.template_path, engine='openpyxl')
+        for index, row in df.iterrows():
+            id = row['品號']
+            if not isinstance(id, str) and np.isnan(id):
+                continue
+            ITEMS.setdefault(id, dict())
+            ITEMS[id].setdefault('name', set())
+            if row['品名'] is not None:
+                result_unit = (row['品名'], row['單位'])
+                ITEMS[id]['name'].add(result_unit)
+                if result_unit not in NAME_to_ID:
+                    NAME_to_ID[result_unit] = id
+                elif NAME_to_ID[result_unit] != id:
+                    print(f"品名 {result_unit} 重复，请确认品号 {NAME_to_ID[result_unit], id}")
+                else:
+                    pass
+        self.template_items = ITEMS
+        self.name_to_id = NAME_to_ID
         
     def fuzzy_match(self, path):
         ocr_results = self.load_pdf_ocr_result(path)
-        ocr_results = self.fuzzy_match_ocr_single(ocr_results)
-        self.items = list()
-        for result in ocr_results:
-            item = SingleItem()
-            item.product_id = self.name_to_id.get((result['matched_name'], result['unit']), None)
-            item.matched_name = result['matched_name']
-            item.origin_input = result['item']
-            item.quantity = result['quantity']
-            item.match_score = result['match_score']
-            item.ocr_score = result['score']
-            item.box = result['box']
-            item.ocr_text = result['text']
-            item.final_text = result['matched_name'] + ' ' + result['quantity'] + ' ' +  result['unit']
-            item.warning = result.get('warning', None)
-            item.error = result.get('error', None)
-            if item.match_score < 0.8:
-                item.warning = "match score < 0.8"
-            if item.ocr_score < 0.75:
-                item.ocr_warning = "ocr score < 0.75"
-            if item.match_score < 0.65:
-                item.error = "match score < 0.65"
-            if item.ocr_score < 0.5:
-                item.ocr_error = "ocr score < 0.6"
-            self.items.append(item)
+        self.parse_ocr_results(ocr_results)
+        names = list(self.name_to_id.keys())
+        for item in self.items:
+            item.origin_input = item.product_name
+            if item.product_id is not None and item.product_name is not None:
+                result = fuzzywuzzy.process.extract(item.product_name, names, limit=5)
+                if item.product_id in self.template_items:
+                    name_matched_id = False
+                    for candidate in result:
+                        candidate_name = candidate[0][0]
+                        if item.product_id == self.name_to_id[candidate[0]]:
+                            item.matched_name = candidate_name
+                            item.match_score = candidate[1] / 100.0
+                            name_matched_id = True
+                            break
+                        else:
+                            pass
+                    if not name_matched_id:
+                        item.error = "Product ID and name do not match"
+                        item.match_score = 0.0
+                else:
+                    item.error = "Product ID not found in customer template"
+                    item.match_score = 0.0
+                    item.product_id = None
+            else:
+                item.error = "Missing product ID or name"
 
     def load_pdf_ocr_result(self, path):
         ocr_results = list()
         length = len(os.listdir(path))
         for i in range(length):
             page_path = os.path.join(path, str(i))
+            if not os.path.isdir(page_path):
+                continue
             for file in os.listdir(page_path):
                 if file.endswith('.json'):
                     json_path = os.path.join(page_path, file)
@@ -89,9 +117,25 @@ class FuzzyMatchPrint(FuzzyMatchBase):
                     ocr_results.append(ocr_result)
         return ocr_results
     
+    def parse_ocr_results(self, ocr_results):
+        """
+        处理多页的pdf信息，目前的强假设：
+        1.第一页表头包含客户信息
+        2.第一页含有表头，且表头与项对齐
+        3.非item的信息只在结尾部分（金额，状态等）
+        """
+        start_index = 0
+        first_page_result = ocr_results[0]
+        start_index = self.load_customer_info(first_page_result, start_index)
+        start_index = self.load_table_title(first_page_result, start_index)
+        self.load_table_item(ocr_results[0], start_index)
+        for i in range(1, len(ocr_results)):
+            self.load_table_item(ocr_results[i], 0)
+        
+    
     def load_customer_info(self, ocr_result, start_index=0):
         """
-        目前读前n项，使用后一项'项次'做确认
+        目前读前n项，使用后一项'項次'做确认
         """
         end_str = ["項次"]
         customer_str = ["客戶代號", "請款對象"]
@@ -111,7 +155,7 @@ class FuzzyMatchPrint(FuzzyMatchBase):
 
     def load_table_title(self, ocr_result, start_index=0):
         """
-        目前读customer_info后的7项，使用后一项是number做确认
+        目前读customer_info后的7项
         """
         str_to_keys = {
             "項次": "index",
@@ -127,10 +171,9 @@ class FuzzyMatchPrint(FuzzyMatchBase):
             item = ocr_result[idx]
             text = item['text']
             if any(x in text for x in list(str_to_keys.keys())):
-                if key not in str_to_keys:
+                if text not in str_to_keys:
                     raise ValueError(f"未知的表头：{text}")
-                key = str_to_keys[text]
-                self.titles.append(key)
+                self.titles.append(str_to_keys[text])
                 self.title_left_position.append(item['box'][0])
                 idx += 1
                 continue
@@ -138,78 +181,110 @@ class FuzzyMatchPrint(FuzzyMatchBase):
         self.title_left_position = np.array(self.title_left_position)
         return idx
     
-    def load_table_item(self, ocr_result, start_index=0):
+    def load_table_item(self, origin_ocr_result, start_index=0):
         """
         按照box top pixel 位置来分割行，按行处理
         按照box left pixel 来确认text属于哪一列
         """
-        idx = start_index
-        while True:
-            single_item = SingleItem()
-            top = ocr_result[idx]['box'][1]
-            while True:
-                item = ocr_result[idx]
-                if abs(item['box'][1] - top) > 10:
-                    break
-                left_position = item['box'][0]
-                nearest_idx = find_nearest(left_position, self.title_left_position)
-                if nearest_idx is None:
-                    continue
-                text = item['text']
-                
-           
-    def build_fuzzy_match(self, template_items, name_to_id):
-        """
-        分别build 基于笔画和部首的模糊匹配器
-        """
-        template_item_name = [tup[0] for tup in list(name_to_id.keys())]
-        with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
-            self.fcm_name_radical = fuzzychinese.FuzzyChineseMatch(analyzer='radical', ngram_range=(3, 3))
-            self.fcm_name_radical.fit(template_item_name)
-            self.fcm_name_stroke = fuzzychinese.FuzzyChineseMatch(analyzer='stroke', ngram_range=(3, 3))
-            self.fcm_name_stroke.fit(template_item_name)
+        items = []
+        ocr_result = deepcopy(origin_ocr_result[start_index:])
+        ocr_result.sort(key=lambda x: x['box'][1])
+        
+        current_row = []
+        previous_top = None
+        
+        for res in ocr_result:
+            top = res['box'][1]
+            if previous_top is not None and abs(top - previous_top) > 15:
+                if len(current_row) <= 2:
+                    item = self.process_special_row(current_row)
+                    if item:
+                        self.items.append(item)
+                    current_row = []
+                else:
+                    self.items.append(self.process_row(current_row))
+                    current_row = []
+            
+            current_row.append(res)
+            previous_top = top
+        
+        if current_row:
+            if len(current_row) <= 2:
+                item = self.process_special_row(current_row)
+                if item:
+                    self.items.append(item)
+            else:
+                self.items.append(self.process_row(current_row))
 
-    def fuzzy_match_ocr_single(self, ocr_results):
-        for row in ocr_results:
-            result = split_ocr_row(row['text'])
-            row.update(result)
-            if row.get('item', None) is None:
+    def process_row(self, row_data):
+        """
+        Process a single row of OCR results and create a SingleItem object.
+        """
+        item = SingleItem()
+        row_box = [float('inf'), float('inf'), float('-inf'), float('-inf')]  # [x1, y1, x2, y2]
+        row_data = sorted(row_data, key=lambda res: res['box'][0])
+
+        for res in row_data:
+            text = res['text']
+            item.ocr_text += text + ' '
+            left = res['box'][0]
+            top = res['box'][1]
+            right = res['box'][2]
+            bottom = res['box'][3]
+            
+            row_box[0] = min(row_box[0], left)
+            row_box[1] = min(row_box[1], top)
+            row_box[2] = max(row_box[2], right)
+            row_box[3] = max(row_box[3], bottom)
+            
+            column_index = self.get_column_index(left, self.title_left_position)
+            
+            if column_index is None:
+                item.warning = f"Text '{text}' has an unrecognized position."
                 continue
-            ocr_item_name = row['item']
-            with contextlib.redirect_stdout(io.StringIO()):
-                fuzzy_result_stroke = self.fcm_name_stroke.transform([ocr_item_name])[0]
-                similarity_scores_stroke = self.fcm_name_stroke.get_similarity_score()[0]
-
-                fuzzy_result_radical = self.fcm_name_radical.transform([ocr_item_name])[0]
-                similarity_scores_radical = self.fcm_name_radical.get_similarity_score()[0]
-            # print(f"OCR识别结果：{ocr_item_name}，模糊匹配结果：{fuzzy_result}, 相似度分数：{similarity_scores}")
             
-            stroke_scores = {}
-            radical_scores = {}
-            
-            # fuzzy chinese transform 返回结果可能存在重复元素，需要去重处理
-            for item, score in zip(fuzzy_result_stroke, similarity_scores_stroke):
-                if item not in stroke_scores or score > stroke_scores[item]:
-                    stroke_scores[item] = score
-            
-            for item, score in zip(fuzzy_result_radical, similarity_scores_radical):
-                if item not in radical_scores or score > radical_scores[item]:
-                    radical_scores[item] = score
-            
-            # 综合两组评分
-            combined_scores = {}
-            all_items = set(stroke_scores.keys()) | set(radical_scores.keys())
-            
-            for item in all_items:
-                stroke_score = stroke_scores.get(item, 0)
-                radical_score = radical_scores.get(item, 0)
-                combined_scores[item] = max(stroke_score, radical_score) + min(stroke_score, radical_score) / 10
-            
-            sorted_items = sorted(combined_scores.keys(), 
-                                key=lambda x: combined_scores[x], 
-                                reverse=True)
-            sorted_scores = [combined_scores[item] for item in sorted_items]
+            column_name = self.titles[column_index]
+            setattr(item, column_name, text)
+        
+        item.box = row_box
+        
+        if not item.product_id:
+            item.error = "Missing product ID"
+        if not item.product_name:
+            item.error = "Missing product name"
+        return item
     
-            row['matched_name'] = sorted_items[0]
-            row['match_score'] = sorted_scores[0] if sorted_scores[0] < 1.0 else 1.0
-        return ocr_results
+    def process_special_row(self, row_data):
+        text = row_data[0]['text']
+        if "總金額" in text:
+            numbers = re.findall(r'\d+\.?\d*', text)
+            self.order_price = float(numbers[0])
+        elif "稅額" in text:
+            pass
+        elif "狀態" in text:
+            self.order_status = text.split(':')[-1]
+        else:
+            pass
+            # item = SingleItem()
+            # row_box = [float('inf'), float('inf'), float('-inf'), float('-inf')]  # [x1, y1, x2, y2]
+            # for res in row_data:
+            #     text = res['text']
+            #     left = res['box'][0]
+            #     top = res['box'][1]
+            #     right = res['box'][2]
+            #     bottom = res['box'][3]
+                
+            #     row_box[0] = min(row_box[0], left)
+            #     row_box[1] = min(row_box[1], top)
+            #     row_box[2] = max(row_box[2], right)
+            #     row_box[3] = max(row_box[3], bottom)
+            #     item.ocr_text += text + ' '
+            # item.box = row_box
+            # item.error = "Unrecognized special row"
+            # return item
+
+    def get_column_index(self, left_position, title_left_position, threshold=10):
+        diff = np.abs(left_position - title_left_position)
+        min_idx = np.argmin(diff)
+        min_diff = diff[min_idx]
+        return min_idx if min_diff <= threshold else None       
