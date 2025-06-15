@@ -1,9 +1,11 @@
+from flask import Flask, request, jsonify
 from paddleocr import PaddleOCR
-import fitz
-from PIL import Image
-import numpy as np
+import os
 
-ocr = PaddleOCR(
+app = Flask(__name__)
+
+# PP-OCRv5_server 模型
+ocr_model = PaddleOCR(
     device="gpu",
     det_db_unclip_ratio=2.0,
     text_detection_model_name="PP-OCRv5_server_det",
@@ -11,26 +13,24 @@ ocr = PaddleOCR(
     use_doc_orientation_classify=False,
     use_doc_unwarping=False,
     use_textline_orientation=False,
-) # 更换 PP-OCRv5_server 模型
+)
 
-def pdf_to_images(pdf_path, dpi=300):
-    doc = fitz.open(pdf_path)
-    images = []
-    for page_num in range(len(doc)):
-        page = doc[page_num]
-        pix = page.get_pixmap(matrix=fitz.Matrix(dpi/72, dpi/72), alpha=False)  # 设置分辨率
-        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-        images.append(np.array(img))
-    doc.close()
-    return images
-
+@app.route('/ocr', methods=['POST'])
+def ocr():
+    json_data = request.get_json()
+    src_list = json_data['src_list']
+    output_dir = os.path.dirname(src_list[0]).replace('src', 'ocr')
+    ocr_list = []
+    for src in src_list:
+        # 大图如pdf推理太占显存，目前机器12GB显存只能推一张。实际能输入图像list
+        result = ocr_model.predict(src)
+        basename = os.path.splitext(os.path.basename(src))[0]
+        # png结果用于调试，对结果无影响
+        # result[0].save_to_img(os.path.join(output_dir, basename + '.png'))
+        result[0].save_to_json(os.path.join(output_dir, basename + '.json'))
+        ocr_list.append(os.path.join(output_dir, basename + '.json'))
+    json_data['ocr_list'] = ocr_list
+    return jsonify(json_data), 200
+        
 if __name__ == "__main__":
-    path = './resource/sap_order_chinese_4.pdf'
-    # path = './resource/oracle_order_chinese_1.pdf'
-    imgs = pdf_to_images(path, dpi=300)
-    for idx, img in enumerate(imgs):
-        result = ocr.predict(img)
-        # for idx, res in enumerate(result):
-            # res.print()
-        result[0].save_to_img("workdir/sap_order_chinese_4/{}".format(idx))
-        result[0].save_to_json("workdir/sap_order_chinese_4/{}".format(idx))
+    app.run(host='0.0.0.0', port=5001)
