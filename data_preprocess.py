@@ -1,5 +1,5 @@
 
-from flask import Flask, request, make_response
+from flask import Flask, request, jsonify
 import base64
 import os
 import fitz
@@ -21,9 +21,7 @@ def data_dump(uuid, mime_type, file_data, workdir='workdir'):
             'task_type': 'handwritting',
             'src_list': dst_path,
         }
-        with open(os.path.join(workdir, uuid, 'src', 'config.json'), 'w') as f:
-            json.dump(json_config, f, indent=4)
-        return True
+        return json_config
     elif mime_type.split('/')[0] == 'application' and mime_type.split('/')[1] == 'pdf':
         images = pdf_to_images(dst_path)
         json_config = {
@@ -35,12 +33,9 @@ def data_dump(uuid, mime_type, file_data, workdir='workdir'):
             image_dst_path = os.path.join(workdir, uuid, 'src', uuid + '_' + str(i) + '.png')
             pil_image.save(image_dst_path)
             json_config['src_list'].append(image_dst_path)
-        with open(os.path.join(workdir, uuid, 'src', 'config.json'), 'w') as f:
-            json.dump(json_config, f, indent=4)
-        return True
+        return json_config
     else:
         return False
-        
         
 def pdf_to_images(pdf_path, dpi=300):
     doc = fitz.open(pdf_path)
@@ -60,11 +55,11 @@ def data_preprocess():
     uuid = json_data['uuid']
     file_data = base64.b64decode(json_data['data'])  # Base64解码
     
-    success = data_dump(uuid, mime_type, file_data)
-    if success:
-        return "Base64 file saved successfully", 200
+    config = data_dump(uuid, mime_type, file_data)
+    if config:
+        return jsonify(config), 200
     else:
         return "Unsupported file format", 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
