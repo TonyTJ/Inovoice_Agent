@@ -19,7 +19,7 @@ def data_dump(uuid, mime_type, file_data, workdir='workdir'):
     if mime_type.split('/')[0] == 'image':
         json_config = {
             'task_type': 'handwritting',
-            'src_list': dst_path,
+            'src_list': [dst_path],
         }
         return json_config
     elif mime_type.split('/')[0] == 'application' and mime_type.split('/')[1] == 'pdf':
