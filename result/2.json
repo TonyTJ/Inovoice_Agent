@@ -1,0 +1,217 @@
+{
+    "customer_name": null,
+    "order_date": null,
+    "status": null,
+    "items": [
+        {
+            "product_id": null,
+            "matched_name": "九層塔",
+            "origin_input": "九層塔",
+            "quantity": "6",
+            "match_score": 1.0
+        },
+        {
+            "product_id": null,
+            "matched_name": "冷凍馬鈴薯球",
+            "origin_input": "求",
+            "quantity": "",
+            "match_score": 0.5283661401155889
+        },
+        {
+            "product_id": null,
+            "matched_name": "熟花生",
+            "origin_input": "熟",
+            "quantity": "",
+            "match_score": 0.8346198086773303
+        },
+        {
+            "product_id": "J009150",
+            "matched_name": "豬腰只",
+            "origin_input": "腰只",
+            "quantity": "3",
+            "match_score": 0.8873490386795286
+        },
+        {
+            "product_id": null,
+            "matched_name": "醜豆",
+            "origin_input": "醋",
+            "quantity": "",
+            "match_score": 0.5338704768035737
+        },
+        {
+            "product_id": null,
+            "matched_name": "海茸",
+            "origin_input": "海",
+            "quantity": "",
+            "match_score": 0.8235907906270945
+        },
+        {
+            "product_id": null,
+            "matched_name": "柳丁",
+            "origin_input": "",
+            "quantity": "",
+            "match_score": 0.0
+        },
+        {
+            "product_id": "B065080",
+            "matched_name": "韭黃",
+            "origin_input": "非黄",
+            "quantity": "2",
+            "match_score": 0.935364333327583
+        },
+        {
+            "product_id": null,
+            "matched_name": "柳丁",
+            "origin_input": "",
+            "quantity": "",
+            "match_score": 0.0
+        },
+        {
+            "product_id": "B001050",
+            "matched_name": "高山高麗菜",
+            "origin_input": "高",
+            "quantity": "5",
+            "match_score": 0.655581431001372
+        },
+        {
+            "product_id": null,
+            "matched_name": "薑汁",
+            "origin_input": "鸿",
+            "quantity": "",
+            "match_score": 0.2947930849610164
+        },
+        {
+            "product_id": null,
+            "matched_name": "薑汁",
+            "origin_input": "红",
+            "quantity": "",
+            "match_score": 0.38028291184936414
+        },
+        {
+            "product_id": null,
+            "matched_name": "美生菜",
+            "origin_input": "美",
+            "quantity": "",
+            "match_score": 0.6707093362804849
+        },
+        {
+            "product_id": "D023010",
+            "matched_name": "四季豆",
+            "origin_input": "四豆狮",
+            "quantity": "2",
+            "match_score": 0.5499508032218272
+        },
+        {
+            "product_id": null,
+            "matched_name": "廣東A",
+            "origin_input": "黄",
+            "quantity": "",
+            "match_score": 0.6720437649328324
+        },
+        {
+            "product_id": null,
+            "matched_name": "富士蘋果",
+            "origin_input": "缸蘋果",
+            "quantity": "5",
+            "match_score": 0.7760878276824257
+        },
+        {
+            "product_id": null,
+            "matched_name": "素腰花",
+            "origin_input": "姜",
+            "quantity": "",
+            "match_score": 0.5445254327320406
+        },
+        {
+            "product_id": "D017020",
+            "matched_name": "牛番茄",
+            "origin_input": "牛番茄",
+            "quantity": "2",
+            "match_score": 1.0
+        },
+        {
+            "product_id": "E009028",
+            "matched_name": "去頭",
+            "origin_input": "红頭",
+            "quantity": "3",
+            "match_score": 0.754736658990548
+        },
+        {
+            "product_id": null,
+            "matched_name": "沙拉筍",
+            "origin_input": "沙拉简",
+            "quantity": "1",
+            "match_score": 0.9520452414991808
+        },
+        {
+            "product_id": null,
+            "matched_name": "百頁",
+            "origin_input": "白",
+            "quantity": "",
+            "match_score": 0.5957618456198381
+        },
+        {
+            "product_id": null,
+            "matched_name": "沙拉油",
+            "origin_input": "沙",
+            "quantity": "",
+            "match_score": 0.5942600998251892
+        },
+        {
+            "product_id": null,
+            "matched_name": "皮蛋",
+            "origin_input": "皮蛋",
+            "quantity": "",
+            "match_score": 1.0
+        },
+        {
+            "product_id": null,
+            "matched_name": "沙拉醬",
+            "origin_input": "蒋",
+            "quantity": "1",
+            "match_score": 0.33761367596430497
+        },
+        {
+            "product_id": "E009049",
+            "matched_name": "蒜粗",
+            "origin_input": "获粗",
+            "quantity": "1",
+            "match_score": 0.6141083009652669
+        },
+        {
+            "product_id": null,
+            "matched_name": "柳丁",
+            "origin_input": "",
+            "quantity": "",
+            "match_score": 0.0
+        },
+        {
+            "product_id": null,
+            "matched_name": "芹菜",
+            "origin_input": "芹芽",
+            "quantity": "",
+            "match_score": 0.8543707650866411
+        },
+        {
+            "product_id": null,
+            "matched_name": "大豆苗",
+            "origin_input": "描苗",
+            "quantity": "2",
+            "match_score": 0.5314118545237984
+        },
+        {
+            "product_id": null,
+            "matched_name": "莧菜",
+            "origin_input": "莫",
+            "quantity": "",
+            "match_score": 0.5088663432138285
+        },
+        {
+            "product_id": null,
+            "matched_name": "大豆苗",
+            "origin_input": "大苗",
+            "quantity": "3",
+            "match_score": 0.8512493778355446
+        }
+    ]
+}
