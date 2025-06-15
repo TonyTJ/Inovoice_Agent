@@ -15,15 +15,26 @@ ocr_model = PaddleOCR(
     use_textline_orientation=False,
 )
 
+from multiprocessing import Process, Queue
+
+def _predict(queue, src):
+    result = ocr_model.predict(src)
+    queue.put(result)
+
 @app.route('/ocr', methods=['POST'])
 def ocr():
     json_data = request.get_json()
     src_list = json_data['src_list']
     output_dir = os.path.dirname(src_list[0]).replace('src', 'ocr')
     ocr_list = []
+    # 大图如pdf推理太占显存，目前机器12GB显存只能推一张。实际能输入图像list
     for src in src_list:
-        # 大图如pdf推理太占显存，目前机器12GB显存只能推一张。实际能输入图像list
-        result = ocr_model.predict(src)
+        q = Queue()
+        p = Process(target=_predict, args=(q, src))
+        p.start()
+        result = q.get()
+        p.join()  # 进程结束自动释放显存
+        
         basename = os.path.splitext(os.path.basename(src))[0]
         # png结果用于调试，对结果无影响
         # result[0].save_to_img(os.path.join(output_dir, basename + '.png'))
