@@ -5,28 +5,30 @@ import fuzzywuzzy.process
 import numpy as np
 from copy import deepcopy
 import pandas as pd
-from .base import FuzzyMatchBase
+from .base import FuzzyMatchBase, draw_chinese_text_in_box
+from PIL import Image, ImageDraw, ImageFont
 
 class SingleItem:
     def __init__(self):
         self.product_id = None
         self.matched_name = None
         self.origin_input = None
-        self.quantity = -1
+        self.quantity = None
         self.match_score = -1
         self.ocr_score = -1
         self.box = None
         self.ocr_text = ''
-        self.final_text = None
+        self.final_text = ''
         self.warning = None
         self.error = None
         self.ocr_warning = None
         self.ocr_error = None
-        self.price = -1
-        self.total_price = -1
+        self.price = None
+        self.total_price = None
         self.unit = None
         self.product_name = None
         self.row_text = None
+        self.page_index = -1
 
     def format_output(self):
         return {
@@ -74,8 +76,8 @@ class FuzzyMatchPrint(FuzzyMatchBase):
         self.template_items = ITEMS
         self.name_to_id = NAME_to_ID
         
-    def fuzzy_match(self, path):
-        ocr_results = self.load_pdf_ocr_result(path)
+    def fuzzy_match(self, path_list):
+        ocr_results = self.load_pdf_ocr_result(path_list)
         self.parse_ocr_results(ocr_results)
         names = list(self.name_to_id.keys())
         for item in self.items:
@@ -102,19 +104,32 @@ class FuzzyMatchPrint(FuzzyMatchBase):
                     item.product_id = None
             else:
                 item.error = "Missing product ID or name"
+            if item.product_id is not None:
+                item.final_text += item.product_id + ' - '
+            if item.matched_name is not None:
+                item.final_text += item.matched_name + ' - '
+            if item.quantity is not None:
+                item.final_text += str(item.quantity) + ' - '
+            if item.unit is not None:
+                item.final_text += item.unit + ' - '
+            if item.price is not None:
+                item.final_text += str(item.price) + ' - '
+            if item.total_price is not None:
+                item.final_text += str(item.total_price) + ' - '
+                
+            if item.ocr_score < 0.75:
+                item.ocr_warning = "ocr score < 0.75"
+            if item.ocr_score < 0.5:
+                item.ocr_error = "ocr score < 0.5"
+            if item.quantity is None:
+                item.error = "Unrecognizable quantity"
 
-    def load_pdf_ocr_result(self, path):
+    def load_pdf_ocr_result(self, path_list):
         ocr_results = list()
-        length = len(os.listdir(path))
-        for i in range(length):
-            page_path = os.path.join(path, str(i))
-            if not os.path.isdir(page_path):
-                continue
-            for file in os.listdir(page_path):
-                if file.endswith('.json'):
-                    json_path = os.path.join(page_path, file)
-                    ocr_result = self.load_ocr_result(json_path)
-                    ocr_results.append(ocr_result)
+        for path in path_list:
+            ocr_result = self.load_ocr_result(path)
+            ocr_results.append(ocr_result)
+        
         return ocr_results
     
     def parse_ocr_results(self, ocr_results):
@@ -128,9 +143,9 @@ class FuzzyMatchPrint(FuzzyMatchBase):
         first_page_result = ocr_results[0]
         start_index = self.load_customer_info(first_page_result, start_index)
         start_index = self.load_table_title(first_page_result, start_index)
-        self.load_table_item(ocr_results[0], start_index)
+        self.load_table_item(ocr_results[0], 0, start_index)
         for i in range(1, len(ocr_results)):
-            self.load_table_item(ocr_results[i], 0)
+            self.load_table_item(ocr_results[i], i, 0)
         
     
     def load_customer_info(self, ocr_result, start_index=0):
@@ -181,12 +196,11 @@ class FuzzyMatchPrint(FuzzyMatchBase):
         self.title_left_position = np.array(self.title_left_position)
         return idx
     
-    def load_table_item(self, origin_ocr_result, start_index=0):
+    def load_table_item(self, origin_ocr_result, page_index, start_index=0):
         """
         按照box top pixel 位置来分割行，按行处理
         按照box left pixel 来确认text属于哪一列
         """
-        items = []
         ocr_result = deepcopy(origin_ocr_result[start_index:])
         ocr_result.sort(key=lambda x: x['box'][1])
         
@@ -199,10 +213,13 @@ class FuzzyMatchPrint(FuzzyMatchBase):
                 if len(current_row) <= 2:
                     item = self.process_special_row(current_row)
                     if item:
+                        item.page_index = page_index
                         self.items.append(item)
                     current_row = []
                 else:
-                    self.items.append(self.process_row(current_row))
+                    item = self.process_row(current_row)
+                    item.page_index = page_index
+                    self.items.append(item)
                     current_row = []
             
             current_row.append(res)
@@ -212,9 +229,12 @@ class FuzzyMatchPrint(FuzzyMatchBase):
             if len(current_row) <= 2:
                 item = self.process_special_row(current_row)
                 if item:
+                    item.page_index = page_index
                     self.items.append(item)
             else:
-                self.items.append(self.process_row(current_row))
+                item = self.process_row(current_row)
+                item.page_index = page_index
+                self.items.append(item)
 
     def process_row(self, row_data):
         """
@@ -226,7 +246,8 @@ class FuzzyMatchPrint(FuzzyMatchBase):
 
         for res in row_data:
             text = res['text']
-            item.ocr_text += text + ' '
+            score = res['score']
+            item.ocr_text += text + ' - '
             left = res['box'][0]
             top = res['box'][1]
             right = res['box'][2]
@@ -245,6 +266,11 @@ class FuzzyMatchPrint(FuzzyMatchBase):
             
             column_name = self.titles[column_index]
             setattr(item, column_name, text)
+            if column_name in ['quantity','product_id', 'product_name']:
+                if item.ocr_score == -1:
+                    item.ocr_score = score
+                else:
+                    item.ocr_score = min(item.ocr_score, score)
         
         item.box = row_box
         
@@ -287,4 +313,55 @@ class FuzzyMatchPrint(FuzzyMatchBase):
         diff = np.abs(left_position - title_left_position)
         min_idx = np.argmin(diff)
         min_diff = diff[min_idx]
-        return min_idx if min_diff <= threshold else None       
+        return min_idx if min_diff <= threshold else None
+    
+    def render_result(self, src_list):
+        origin_imgs = list()
+        ocr_imgs = list()
+        match_imgs = list()
+        state2color = {
+            'normal': (0, 255, 0),
+            'warning': (180, 180, 0),
+            'error': (255, 0, 0)
+        }
+        for src in src_list:
+            img = Image.open(src)
+            origin_imgs.append(img)
+            width, height = origin_imgs[0].size
+            ocr_result_image = Image.new('RGB', (width, height), color='white')
+            match_result_image = Image.new('RGB', (width, height), color='white')
+            ocr_imgs.append(ocr_result_image)
+            match_imgs.append(match_result_image)
+            
+        for item in self.items:
+            ocr_result_image = ocr_imgs[item.page_index]
+            match_result_image = match_imgs[item.page_index]
+            
+            box = item.box
+            state_ocr = 'normal'
+            if item.ocr_warning is not None:
+                state_ocr = 'warning'
+            if item.ocr_error is not None:
+                state_ocr = 'error'
+            color_ocr = state2color[state_ocr]
+            ocr_result_image = draw_chinese_text_in_box(ocr_result_image, item.ocr_text, box, text_color=color_ocr)
+
+            state = 'normal'
+            if item.warning is not None:
+                state = 'warning'
+            if item.error is not None:
+                state = 'error'
+            color = state2color[state]
+            match_result_image = draw_chinese_text_in_box(match_result_image, item.final_text, box, text_color=color)
+            
+        for origin_img, ocr_img, match_img, src_path in zip(origin_imgs, ocr_imgs, match_imgs, src_list):
+            final_img = Image.new('RGB', (width*3, height))
+            final_img.paste(origin_img, (0, 0))
+            final_img.paste(ocr_img, (width, 0))
+            final_img.paste(match_img, (width*2, 0))
+            render_path = src_path.replace('src', 'render')
+            if not os.path.exists(os.path.dirname(render_path)):
+                os.makedirs(os.path.dirname(render_path))
+            final_img.save(render_path)
+            
+            

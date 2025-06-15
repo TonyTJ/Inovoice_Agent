@@ -105,7 +105,7 @@ class FuzzyMatchHandwriting(FuzzyMatchBase):
             if item.match_score < 0.65:
                 item.error = "match score < 0.65"
             if item.ocr_score < 0.5:
-                item.ocr_error = "ocr score < 0.6"
+                item.ocr_error = "ocr score < 0.5"
             self.items.append(item)
                 
     def build_fuzzy_match(self, template_items, name_to_id):

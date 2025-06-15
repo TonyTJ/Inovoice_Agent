@@ -3,6 +3,7 @@ import numpy as np
 import re
 import json
 from PIL import Image, ImageDraw, ImageFont
+import os
 
 def draw_chinese_text_in_box(img, text, box_coords, font_path="resource/wqy-zenhei.ttc", text_color=(0, 0, 0), bg_color=None):
     draw = ImageDraw.Draw(img)
@@ -87,8 +88,9 @@ class FuzzyMatchBase:
         ocr_boxes = ocr_result['rec_boxes']
         return [dict(text=text, score=score, box=box) for text, score, box in zip(ocr_texts, ocr_scores, ocr_boxes)]
 
-    def render_result(self, src_data, output_path):
-        img = src_data
+    def render_result(self, src_path):
+        img = Image.open(src_path)
+        render_path = src_path.replace('src', 'render')
         state2color = {
             'normal': (0, 255, 0),
             'warning': (180, 180, 0),
@@ -119,7 +121,9 @@ class FuzzyMatchBase:
         final_img.paste(img, (0, 0))
         final_img.paste(ocr_result_image, (width, 0))
         final_img.paste(match_result_image, (width * 2, 0))
-        final_img.save(output_path)
+        if not os.path.exists(os.path.dirname(render_path)):
+            os.makedirs(os.path.dirname(render_path))
+        final_img.save(render_path)
 
     def format_output(self, output_path):
         output = {
@@ -133,3 +137,4 @@ class FuzzyMatchBase:
             output['items'].append(item.format_output())
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=4)
+        return output
