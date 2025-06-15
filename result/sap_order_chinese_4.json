@@ -1,0 +1,917 @@
+{
+    "customer_name": " 202088(林小美)",
+    "order_date": " 2025-03-29",
+    "status": " 處理中",
+    "items": [
+        {
+            "product_id": "B059010",
+            "matched_name": "廣東A/生菜葉",
+            "origin_input": "廣東A/生菜葉",
+            "quantity": "15",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J017111",
+            "matched_name": "京都排骨",
+            "origin_input": "京都排骨",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E002411",
+            "matched_name": "綠火焰生菜",
+            "origin_input": "綠火焰生菜",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E011050",
+            "matched_name": "薑泥",
+            "origin_input": "薑泥",
+            "quantity": "5",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q017120",
+            "matched_name": "鯊魚煙",
+            "origin_input": "鯊魚煙",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q039010",
+            "matched_name": "餛飩\\雲吞",
+            "origin_input": "飩\\雲",
+            "quantity": "6",
+            "match_score": 0.6
+        },
+        {
+            "product_id": "G013042",
+            "matched_name": "板豆腐-硬",
+            "origin_input": "板豆腐-硬",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G005140",
+            "matched_name": "生豆腸",
+            "origin_input": "生豆腸",
+            "quantity": "14",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "H007040",
+            "matched_name": "軟絲\\軟時",
+            "origin_input": "軟絲\\軟時",
+            "quantity": "11",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "R015200",
+            "matched_name": "無骨雞排",
+            "origin_input": "無骨雞排",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "R005041",
+            "matched_name": "上海雪菜",
+            "origin_input": "上海雪菜",
+            "quantity": "4",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G015050",
+            "matched_name": "中華雞蛋豆腐",
+            "origin_input": "中華雞蛋豆腐",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "H005102",
+            "matched_name": "蛤仔小/七分",
+            "origin_input": "蛤仔小/七分",
+            "quantity": "20",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G013070",
+            "matched_name": "板豆腐大漢-大",
+            "origin_input": "板豆腐大漢-大",
+            "quantity": "8",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E002109",
+            "matched_name": "櫻桃蘿蔔",
+            "origin_input": "櫻桃蘿蔔",
+            "quantity": "16",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q041041",
+            "matched_name": "蛋餃桂冠",
+            "origin_input": "蛋餃桂冠",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "S015390",
+            "matched_name": "蕃茄醬",
+            "origin_input": "蕃茄醬",
+            "quantity": "19",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "S007033",
+            "matched_name": "油麵(大維)",
+            "origin_input": "油麵(大維)",
+            "quantity": "4",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D011010",
+            "matched_name": "苦瓜",
+            "origin_input": "苦瓜",
+            "quantity": "5",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G005010",
+            "matched_name": "豆干",
+            "origin_input": "豆干",
+            "quantity": "1",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q027071",
+            "matched_name": "大湯圓白",
+            "origin_input": "大湯圓白",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "S007461",
+            "matched_name": "河粉(台式)",
+            "origin_input": "河粉(台式)",
+            "quantity": "11",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D049013",
+            "matched_name": "熟凍栗子肉",
+            "origin_input": "熟凍栗子肉",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "N001020",
+            "matched_name": "光鴨",
+            "origin_input": "光鴨",
+            "quantity": "11",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C003092",
+            "matched_name": "真空綠竹筍去殼/沙拉筍",
+            "origin_input": "真空綠竹筍去殼/沙拉筍",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "F001081",
+            "matched_name": "杏鮑菇小/杏鮑菇C",
+            "origin_input": "杏鮑菇小/杏鮑菇C",
+            "quantity": "17",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E009030",
+            "matched_name": "蒜片",
+            "origin_input": "蒜片",
+            "quantity": "11",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "R003020",
+            "matched_name": "酸菜絲/酸菜葉切絲",
+            "origin_input": "酸菜絲/酸菜葉切絲",
+            "quantity": "4",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "M001090",
+            "matched_name": "羊小排",
+            "origin_input": "羊小排",
+            "quantity": "8",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B029022",
+            "matched_name": "紅鳳菜",
+            "origin_input": "紅鳳菜",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q009010",
+            "matched_name": "肉粽",
+            "origin_input": "肉粽",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B067015",
+            "matched_name": "苜蓿芽",
+            "origin_input": "苜蓿芽",
+            "quantity": "13",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E009022",
+            "matched_name": "蒜仁大/去皮",
+            "origin_input": "蒜仁大",
+            "quantity": "13",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D027014",
+            "matched_name": "甜豆",
+            "origin_input": "甜豆",
+            "quantity": "1",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B027003",
+            "matched_name": "蘿蔓生菜(本地)",
+            "origin_input": "蘿蔓生菜(本地)",
+            "quantity": "19",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B004010",
+            "matched_name": "茼蒿",
+            "origin_input": "蒿",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G015090",
+            "matched_name": "大漢嫩豆腐",
+            "origin_input": "大漢嫩豆腐",
+            "quantity": "20",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D013020",
+            "matched_name": "扁蒲",
+            "origin_input": "扁蒲",
+            "quantity": "19",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B007013",
+            "matched_name": "山東大白菜",
+            "origin_input": "山東大白菜",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B067013",
+            "matched_name": "銀芽",
+            "origin_input": "銀芽",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "H007050",
+            "matched_name": "小卷",
+            "origin_input": "小卷",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C005031",
+            "matched_name": "泰國蘆筍去皮",
+            "origin_input": "泰國蘆筍去皮",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D045010",
+            "matched_name": "新鮮白果",
+            "origin_input": "新鮮白果",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D017082",
+            "matched_name": "黑柿蕃茄",
+            "origin_input": "黑柿蕃茄",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "F009050",
+            "matched_name": "海帶根",
+            "origin_input": "海帶根",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C037011",
+            "matched_name": "荸薺\\馬蹄肉\\馬薯\\地梨去皮",
+            "origin_input": "薺\\馬蹄肉\\馬薯\\地梨去皮",
+            "quantity": "20",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "C027060",
+            "matched_name": "洋地瓜(刈薯)",
+            "origin_input": "洋地瓜(刈薯)",
+            "quantity": "5",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J009120",
+            "matched_name": "豬肝",
+            "origin_input": "豬肝",
+            "quantity": "2",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J011060",
+            "matched_name": "里肌肉條",
+            "origin_input": "里肌肉條",
+            "quantity": "3",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B001007",
+            "matched_name": "高麗菜絲",
+            "origin_input": "高麗菜絲",
+            "quantity": "20",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J009355",
+            "matched_name": "豬絞肉/粗",
+            "origin_input": "豬絞肉/粗",
+            "quantity": "4",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "L001250",
+            "matched_name": "牛筋",
+            "origin_input": "牛筋",
+            "quantity": "4",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "F001010",
+            "matched_name": "生香菇",
+            "origin_input": "生香菇",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "A057040",
+            "matched_name": "小西瓜/小玉",
+            "origin_input": "小西瓜/小玉",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q053110",
+            "matched_name": "古早味排骨/翡翠大排",
+            "origin_input": "古早味排骨/翡翠大排",
+            "quantity": "3",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C021012",
+            "matched_name": "洋芋\\馬鈴薯丁",
+            "origin_input": "洋芋\\馬鈴薯丁",
+            "quantity": "2",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "Q043020",
+            "matched_name": "肉羹",
+            "origin_input": "肉羹",
+            "quantity": "8",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B023020",
+            "matched_name": "小芥菜",
+            "origin_input": "小芥菜",
+            "quantity": "7",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "H001170",
+            "matched_name": "魚皮",
+            "origin_input": "魚皮",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J009282",
+            "matched_name": "虎掌",
+            "origin_input": "虎掌",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J009031",
+            "matched_name": "豬柳",
+            "origin_input": "豬柳",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D025011",
+            "matched_name": "荷蘭豆去蒂",
+            "origin_input": "荷蘭豆去蒂",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G005050",
+            "matched_name": "白干絲\\白豆干絲",
+            "origin_input": "白干絲\\白豆干絲",
+            "quantity": "20",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "H001021",
+            "matched_name": "吳郭魚海",
+            "origin_input": "吳郭魚海",
+            "quantity": "15",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C035010",
+            "matched_name": "芋頭",
+            "origin_input": "芋頭",
+            "quantity": "2",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G013141",
+            "matched_name": "四角油豆腐丁",
+            "origin_input": "四角油豆腐丁",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J009021",
+            "matched_name": "豬肉片(厚片)-炒用",
+            "origin_input": "豬肉片(厚片)-炒用",
+            "quantity": "14",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B025020",
+            "matched_name": "廣東芥蘭",
+            "origin_input": "廣東芥蘭",
+            "quantity": "1",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q055190",
+            "matched_name": "油條",
+            "origin_input": "油條",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "K003040",
+            "matched_name": "三節雞翅",
+            "origin_input": "三節雞翅",
+            "quantity": "17",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E003018",
+            "matched_name": null,
+            "origin_input": "青絲",
+            "quantity": "4",
+            "match_score": 0.0
+        },
+        {
+            "product_id": "C005033",
+            "matched_name": "泰國綠蘆筍(小)",
+            "origin_input": "泰國綠蘆筍(小)",
+            "quantity": "19",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J009020",
+            "matched_name": "豬肉片",
+            "origin_input": "豬肉片",
+            "quantity": "4",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q043020",
+            "matched_name": "肉羹",
+            "origin_input": "肉羹",
+            "quantity": "4",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C009050",
+            "matched_name": "紅蘿蔔絲",
+            "origin_input": "紅蘿蔔絲",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B061011",
+            "matched_name": "翡翠/菠菜泥(1斤/盒)",
+            "origin_input": "翡翠/菠菜泥(1斤/盒)",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "F001012",
+            "matched_name": "生香菇大",
+            "origin_input": "生香菇大",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D051033",
+            "matched_name": "紫花椰菜",
+            "origin_input": "紫花椰菜",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B005020",
+            "matched_name": "圓白菜/包心白菜/大白菜",
+            "origin_input": "圓白菜/包心白菜/大白菜",
+            "quantity": "4",
+            "match_score": 0.95
+        },
+        {
+            "product_id": "G005172",
+            "matched_name": "炸豆皮",
+            "origin_input": "炸豆皮",
+            "quantity": "13",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "K005031",
+            "matched_name": "仿雞腿切塊",
+            "origin_input": "仿雞腿切塊",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E009030",
+            "matched_name": "蒜片",
+            "origin_input": "蒜片",
+            "quantity": "17",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B031010",
+            "matched_name": "油菜",
+            "origin_input": "油菜",
+            "quantity": "3",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D037050",
+            "matched_name": "東昇南瓜\\日本南瓜",
+            "origin_input": "東昇南瓜\\日本南瓜",
+            "quantity": "20",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "J009181",
+            "matched_name": "腩排\\子排\\中排3cm大小",
+            "origin_input": "排\\子排\\中排3cm大小",
+            "quantity": "16",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "S023220",
+            "matched_name": "生花生\\花生仁",
+            "origin_input": "生花生\\花生仁",
+            "quantity": "20",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "B003010",
+            "matched_name": "小白菜/土白菜",
+            "origin_input": "小白菜/土白菜",
+            "quantity": "17",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q027031",
+            "matched_name": "花生湯圓桂冠",
+            "origin_input": "花生湯圓桂冠",
+            "quantity": "16",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "H001120",
+            "matched_name": "鯖魚",
+            "origin_input": "鯖魚",
+            "quantity": "16",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G017020",
+            "matched_name": "甜不辣片",
+            "origin_input": "甜不辣片",
+            "quantity": "1",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E009021",
+            "matched_name": "蒜仁去頭",
+            "origin_input": "蒜仁去頭",
+            "quantity": "19",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J001010",
+            "matched_name": "五花肉\\中肉\\三層肉",
+            "origin_input": "五花肉\\中肉\\三層肉",
+            "quantity": "9",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "K013070",
+            "matched_name": "清雞胸肉",
+            "origin_input": "清雞胸肉",
+            "quantity": "2",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "S015571",
+            "matched_name": "沙拉\\美乃滋\\沙拉醬",
+            "origin_input": "沙拉\\美乃滋\\沙拉醬",
+            "quantity": "3",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "E011030",
+            "matched_name": "薑絲/子薑絲",
+            "origin_input": "薑絲/子薑絲",
+            "quantity": "19",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q053050",
+            "matched_name": "金華火腿",
+            "origin_input": "金華火腿",
+            "quantity": "13",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "S015581",
+            "matched_name": "沙拉\\美乃滋桂冠",
+            "origin_input": "沙拉\\美乃滋桂冠",
+            "quantity": "20",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "D049015",
+            "matched_name": "冷凍栗子",
+            "origin_input": "冷凍栗子",
+            "quantity": "3",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "R005131",
+            "matched_name": "福菜",
+            "origin_input": "福菜",
+            "quantity": "1",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G023620",
+            "matched_name": "素蝦仁",
+            "origin_input": "素蝦仁",
+            "quantity": "11",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B013010",
+            "matched_name": "空心菜/蕹菜",
+            "origin_input": "空心菜/菜",
+            "quantity": "7",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "F001090",
+            "matched_name": "杏鮑菇頭",
+            "origin_input": "杏鮑菇頭",
+            "quantity": "1",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q015210",
+            "matched_name": "燻雞",
+            "origin_input": "燻雞",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C021010",
+            "matched_name": "洋芋\\馬鈴薯",
+            "origin_input": "洋芋\\馬鈴薯",
+            "quantity": "4",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "B003030",
+            "matched_name": "蚵白菜/鵝白菜",
+            "origin_input": "白菜/鵝白菜",
+            "quantity": "1",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "D027015",
+            "matched_name": "甜豆(去絲)",
+            "origin_input": "甜豆(去絲)",
+            "quantity": "19",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q023200",
+            "matched_name": "炸魚排(自助餐用)",
+            "origin_input": "炸魚排(自助餐用)",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E002310",
+            "matched_name": "巴西里",
+            "origin_input": "巴西里",
+            "quantity": "14",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q055190",
+            "matched_name": "油條",
+            "origin_input": "油條",
+            "quantity": "15",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B001070",
+            "matched_name": "紫高麗",
+            "origin_input": "紫高麗",
+            "quantity": "14",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q045120",
+            "matched_name": "新竹貢丸",
+            "origin_input": "新竹貢丸",
+            "quantity": "7",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C003010",
+            "matched_name": "綠竹筍",
+            "origin_input": "綠竹筍",
+            "quantity": "18",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B023010",
+            "matched_name": "芥菜",
+            "origin_input": "芥菜",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B067010",
+            "matched_name": "豆芽菜",
+            "origin_input": "豆芽菜",
+            "quantity": "5",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "J017020",
+            "matched_name": "大排片",
+            "origin_input": "大排片",
+            "quantity": "12",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "R015110",
+            "matched_name": "冷凍玉米粒",
+            "origin_input": "冷凍玉米粒",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E009060",
+            "matched_name": "蒜粗",
+            "origin_input": "蒜粗",
+            "quantity": "6",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "H005103",
+            "matched_name": "蛤仔中",
+            "origin_input": "蛤仔中",
+            "quantity": "17",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "S015581",
+            "matched_name": "沙拉\\美乃滋桂冠",
+            "origin_input": "沙拉\\美乃滋桂冠",
+            "quantity": "17",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "C031020",
+            "matched_name": "日本山藥",
+            "origin_input": "日本山藥",
+            "quantity": "9",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "E007041",
+            "matched_name": "朝天椒切好\\小辣椒",
+            "origin_input": "朝天椒切好\\小辣椒",
+            "quantity": "10",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "A087020",
+            "matched_name": "黃聖女",
+            "origin_input": "黃聖女",
+            "quantity": "17",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B015011",
+            "matched_name": "菠菜高山",
+            "origin_input": "菠菜高山",
+            "quantity": "10",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q047030",
+            "matched_name": "士林香腸",
+            "origin_input": "士林香腸",
+            "quantity": "5",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "G013140",
+            "matched_name": "油豆腐四角",
+            "origin_input": "油豆腐四角",
+            "quantity": "17",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "B071180",
+            "matched_name": "石斛蘭",
+            "origin_input": "石斛蘭",
+            "quantity": "7",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "S007460",
+            "matched_name": "河粉",
+            "origin_input": "河粉",
+            "quantity": "3",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "C007050",
+            "matched_name": "白蘿蔔進口",
+            "origin_input": "白蘿蔔進口",
+            "quantity": "11",
+            "match_score": 0.9
+        },
+        {
+            "product_id": "Q033130",
+            "matched_name": "蝦仁卷\\蝦卷",
+            "origin_input": "蝦仁卷\\蝦卷",
+            "quantity": "17",
+            "match_score": 0.86
+        },
+        {
+            "product_id": "C007030",
+            "matched_name": "白蘿蔔絲",
+            "origin_input": "白蘿蔔絲",
+            "quantity": "2",
+            "match_score": 0.9
+        }
+    ]
+}

@@ -1,31 +1,50 @@
 from PIL import Image
 from fuzzy_match import FuzzyMatchHandwriting
 from fuzzy_match import FuzzyMatchPrint
+from flask import Flask, request, jsonify
+import os
 
-def fuzzy_match_handwriting(name):
+app = Flask(__name__)
+
+@app.route('/fuzzy_match_handwriting', methods=['POST'])
+def fuzzy_match_handwriting():
+    json_data = request.get_json()
+    ocr_list = json_data['ocr_list']
+    
     Matcher = FuzzyMatchHandwriting()
-    ocr_path = './workdir/{}_res.json'.format(name)
+    ocr_path = ocr_list[0]
     Matcher.fuzzy_match(ocr_path)
-    output_path = './workdir/{}_output.json'.format(name)
-    Matcher.format_output(output_path)
-    render_path = './workdir/{}_render.jpg'.format(name)
-    src_path = './workdir/{}.jpg'.format(name)
-    src_data = Image.open(src_path)
-    Matcher.render_result(src_data, render_path)
+    output_dir = os.path.dirname(ocr_path).replace('ocr', 'output')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_path = os.path.join(output_dir, 'output.json')
+    output = Matcher.format_output(output_path)
+    
+    src_list = json_data['src_list']
+    src_path = src_list[0]
+    Matcher.render_result(src_path)
+    
+    return jsonify(output), 200
 
-def fuzzy_match_print(name):
+@app.route('/fuzzy_match_print', methods=['POST'])
+def fuzzy_match_print():
+    json_data = request.get_json()
+    ocr_list = json_data['ocr_list']
+    
     Matcher = FuzzyMatchPrint()
-    ocr_path = './workdir/{}'.format(name)
-    Matcher.fuzzy_match(ocr_path)
-    output_path = './workdir/{}/output.json'.format(name)
-    Matcher.format_output(output_path)
-    # render_path = './workdir/{}_render.jpg'.format(name)
-    # src_path = './workdir/{}.jpg'.format(name)
-    # src_data = Image.open(src_path)
-    # Matcher.render_result(src_data, render_path)
+    Matcher.fuzzy_match(ocr_list)
+    output_dir = os.path.dirname(ocr_list[0]).replace('ocr', 'output')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_path = os.path.join(output_dir, 'output.json')
+    output = Matcher.format_output(output_path)
+    
+    src_list = json_data['src_list']
+    Matcher.render_result(src_list)
+    
+    return jsonify(output), 200
 
 
 if __name__ == '__main__':
-    name = 'oracle_order_chinese_1'
-    fuzzy_match_handwriting(name)
+    app.run(debug=True, host='0.0.0.0', port=5002)
     
